@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TransactionDaoImpl implements TranscationDao {
+public class TransactionDaoImpl implements TransactionDao {
     JdbcTemplate jdbc;
     NamedParameterJdbcTemplate namedJdbc;
 

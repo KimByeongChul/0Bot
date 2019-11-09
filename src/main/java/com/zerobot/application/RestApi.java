@@ -1,28 +1,27 @@
 package com.zerobot.application;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.zerobot.dao.transaction.Transaction;
-import com.zerobot.dao.transaction.TranscationDao;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ImportResource;
+import com.zerobot.dao.transaction.TransactionDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 
 @RestController
 public class RestApi {
     Gson gson = new Gson();
     JsonParser parser = new JsonParser();
+    ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+
 
     @RequestMapping(value = "/ping", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -44,13 +43,17 @@ public class RestApi {
                 .getAsJsonObject("user")
                 .get("id").getAsString();
 
+
+
+
+        // Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
         Transaction transaction = new Transaction();
         transaction.setTransaction_id(userId);
 
-        //Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
-        /*
-        트랜잭션을 저장하는 이유 사용자가 대화할 때 순서를 정하기 위해서 입니당.
-         */
+        TransactionDao transactionService = ctx.getBean(TransactionDao.class);
+
+        transaction.setTransaction_id(userId);
+        // Todo-End
 
         JsonObject returnJson = getSimpleTextJson("임시");
 
