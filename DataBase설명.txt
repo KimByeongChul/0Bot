@@ -1,0 +1,72 @@
+create table ZEROBOT.HISTORY
+(
+    U_ID             varchar(100) null, // 유저 ID
+    CREATE_TIME      date         null, // 대화 했던 타임스탬프
+    USER_INPUT       varchar(200) null, // 내가 답변했었던 대화
+    CORRECTED_OUTPUT varchar(200) null, // 유사도의 기준이 되는 대화
+    Similarity       int          null, // 유사도
+    constraint HISTORY_KAKAO_USER_U_ID_fk
+        foreign key (U_ID) references ZEROBOT.KAKAO_USER (U_ID)
+);
+히스토리 테이블은 사용자가 대답했던 대화에 대해 유사도를 저장하여 조회하기 위한 테이블 입니당,
+
+
+
+-------------------------------------------------------
+create table ZEROBOT.KAKAO_USER
+(
+    U_ID varchar(100) not null
+        primary key
+);
+카카오 유저 테이블은 ID 관리를 위해 만들어 놓은 테이블 입니다.
+
+
+
+-------------------------------------------------------
+create table ZEROBOT.MESSAGE
+(
+    OBJECT_ID varchar(30)  not null
+        primary key,
+    MESSAGE   varchar(500) null
+);
+메세지 테이블은 챗봇이 쓰는 대화를 저장해놓은 테이블 입니다.
+
+
+
+-------------------------------------------------------
+create table ZEROBOT.SCENARIO
+(
+    SCENARIO_ID varchar(30)  not null
+        primary key,
+    COMMENT     varchar(500) null
+);
+시나리오 테이블은 챗봇이 롤-플레이를 할 수 있도록 하는 시나리오의 ID를 저장해놓은 테이블 입니다.
+랜덤으로 시나리오 ID만 취득한다면 시나리오_스텝 테이블에 조회하여 시나리오 리스트가 조회됩니다.
+
+
+
+-------------------------------------------------------
+create table ZEROBOT.SCENARIO_STEP
+(
+    SCENARIO_ID varchar(30) null, // 시나리오 ID를 조건으로 검색하면 대화 시나리오를 얻을 수 있습니다.
+    OBJECT_ID   varchar(30) null, // 메세지의 ID를 이용하면 메세지 전체 내용을 조회할 수 있습니다.
+    ORDER_STEP  int         null, // 물어보는 순서를 저장합니다.
+    constraint SCENARIO_STEP_MESSAGE_OBJECT_ID_fk
+        foreign key (OBJECT_ID) references ZEROBOT.MESSAGE (OBJECT_ID),
+    constraint SCENARIO_STEP_SCENARIO_SCENARIO_ID_fk
+        foreign key (SCENARIO_ID) references ZEROBOT.SCENARIO (SCENARIO_ID)
+);
+시나리오를 내용을 쭉 조회하는데 사용됩니다.
+
+
+
+-------------------------------------------------------
+create table ZEROBOT.TRANSACTION
+(
+    TRANSACTION_ID    varchar(100) not null
+        primary key,
+    CON_SCENARIO      varchar(30)  null,
+    CON_SCENARIO_STEP varchar(30)  null
+);
+현재 대화 중인 정보를 저장함으로써 로직 구현에 도움을 줄 테이블 입니다.
+

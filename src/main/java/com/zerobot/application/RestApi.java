@@ -48,6 +48,9 @@ public class RestApi {
         transaction.setTransaction_id(userId);
 
         //Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
+        /*
+        트랜잭션을 저장하는 이유 사용자가 대화할 때 순서를 정하기 위해서 입니당.
+         */
 
         JsonObject returnJson = getSimpleTextJson("임시");
 
