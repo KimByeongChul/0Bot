@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.zerobot.dao.scenario.Scenario;
+import com.zerobot.dao.scenario.ScenarioDao;
 import com.zerobot.dao.transaction.Transaction;
 import com.zerobot.dao.transaction.TransactionDao;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +38,8 @@ public class RestApi {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public String startBot(@RequestBody String jsonObject) throws FileNotFoundException {
+        TransactionDao transactionDao = ctx.getBean(TransactionDao.class);
+        ScenarioDao scenarioDao = ctx.getBean(ScenarioDao.class);
 
         JsonObject receiveJson = getJsonObject(jsonObject);
 
@@ -43,16 +47,18 @@ public class RestApi {
                 .getAsJsonObject("user")
                 .get("id").getAsString();
 
+        Scenario scenario = scenarioDao.getRandomScenario();
+        String scenarioId = scenario.getScenario_id();
 
 
 
         // Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
         Transaction transaction = new Transaction();
         transaction.setTransaction_id(userId);
+        transaction.setCon_scenario(scenarioId);
+        transaction.setCon_scenario_step(1);
+        transactionDao.insert(transaction);
 
-        TransactionDao transactionService = ctx.getBean(TransactionDao.class);
-
-        transaction.setTransaction_id(userId);
         // Todo-End
 
         JsonObject returnJson = getSimpleTextJson("임시");

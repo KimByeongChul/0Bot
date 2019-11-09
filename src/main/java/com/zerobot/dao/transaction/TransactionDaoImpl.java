@@ -46,4 +46,12 @@ public class TransactionDaoImpl implements TransactionDao {
 
         namedJdbc.queryForObject(sql, map, new Transaction());
     }
+
+    public void setJdbc(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    public void setNamedJdbc(NamedParameterJdbcTemplate namedJdbc) {
+        this.namedJdbc = namedJdbc;
+    }
 }
