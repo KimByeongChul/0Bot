@@ -47,9 +47,9 @@ public class RestApi {
         Transaction transaction = new Transaction();
         transaction.setTransaction_id(userId);
 
-        //Todo : 트랜잭션 서비스를 이용해서 저장 시퀀스 실행 필
+        //Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
 
-        JsonObject returnJson = getSimpleTextJson(text);
+        JsonObject returnJson = getSimpleTextJson("임시");
 
         return returnJson.toString();
     }
