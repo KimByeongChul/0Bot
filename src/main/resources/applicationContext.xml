@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/util"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <import resource="jdbcContext.xml"></import>
+
+    <bean class="com.zerobot.dao.transaction.TransactionDaoImpl" autowire="byType"></bean>
+    <bean class="com.zerobot.dao.history.HistoryDaoImpl" autowire="byType"></bean>
+    <bean class="com.zerobot.dao.kakao_user.Kakao_userDaoImpl" autowire="byType"></bean>
+    <bean class="com.zerobot.dao.message.MessageDaoimpl" autowire="byType"></bean>
+    <bean class="com.zerobot.dao.scenario.ScenarioDaoImpl" autowire="byType"></bean>
+    <bean class="com.zerobot.dao.scenario_step.Scenario_stepDaoImpl" autowire="byType"></bean>
+
+</beans>

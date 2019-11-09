@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <!-- properties 파일을 쓰기위한 설-->
+    <util:properties id="jdbcProperty" location="jdbc.properties"></util:properties>
+
+    <!-- 처음에 sql문을 실행하는 문법-->
+    <!--    <jdbc:initialize-database>
+            <jdbc:script location="script/dropTableHuman.sql"/>
+            <jdbc:script location="script/createTableHuman.sql"/>
+            <jdbc:script location="script/insertHuman.sql"/>
+        </jdbc:initialize-database>-->
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="#{jdbcProperty['jdbc.driverClassName']}"></property>
+        <property name="url" value="#{jdbcProperty['jdbc.url']}"></property>
+        <property name="username" value="#{jdbcProperty['jdbc.username']}"></property>
+        <property name="password" value="#{jdbcProperty['jdbc.password']}"></property>
+        <property name="maxActive" value="#{jdbcProperty['jdbc.maxPoolSize']}"></property>
+    </bean>
+
+    <bean class="org.springframework.jdbc.core.JdbcTemplate" autowire="byType">
+        <constructor-arg ref="dataSource"></constructor-arg>
+        <!--        constructor-arg는 JdbcTemplate(dataSource) 이렇게 대입한다는 뜻임-->
+    </bean>
+
+    <bean class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" autowire="byType">
+        <constructor-arg ref="dataSource"></constructor-arg>
+    </bean>
+</beans>
