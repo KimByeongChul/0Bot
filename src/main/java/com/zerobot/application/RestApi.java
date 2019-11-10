@@ -48,20 +48,22 @@ public class RestApi {
                 .get("id").getAsString();
 
         Scenario scenario = scenarioDao.getRandomScenario();
-        String scenarioId = scenario.getScenario_id();
 
-
-
-        // Todo : 트랜잭션 서비스를 이용해서 저장 로직 실행 필요
         Transaction transaction = new Transaction();
         transaction.setTransaction_id(userId);
-        transaction.setCon_scenario(scenarioId);
+        transaction.setCon_scenario(scenario.getScenario_id());
         transaction.setCon_scenario_step(1);
+
         transactionDao.insert(transaction);
 
-        // Todo-End
+//        String anwser = "Hi ~, shall we start today's lesson? Start study by typing \"LEGO\"";
+        String botAnswer = "Now, let's try a role-play!\n" +
+                "please use the expressions in the card as much as you can during the role-play\n" +
+                "We Shall do an exercise that will involve you to translate korean sentences into English.\n" +
+                "Okay! Let's hop right in! *('V')*\n" + scenario.getComment() + "\n\n" +
+                "";
 
-        JsonObject returnJson = getSimpleTextJson("임시");
+        JsonObject returnJson = getSimpleTextJson(botAnswer);
 
         return returnJson.toString();
     }
