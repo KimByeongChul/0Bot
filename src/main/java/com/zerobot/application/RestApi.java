@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.zerobot.dao.message.MessageDao;
 import com.zerobot.dao.scenario.Scenario;
 import com.zerobot.dao.scenario.ScenarioDao;
+import com.zerobot.dao.scenario_step.Scenario_step;
+import com.zerobot.dao.scenario_step.Scenario_stepDao;
 import com.zerobot.dao.transaction.Transaction;
 import com.zerobot.dao.transaction.TransactionDao;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +27,10 @@ public class RestApi {
     Gson gson = new Gson();
     JsonParser parser = new JsonParser();
     ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-
+    TransactionDao transactionDao = ctx.getBean(TransactionDao.class);
+    ScenarioDao scenarioDao = ctx.getBean(ScenarioDao.class);
+    Scenario_stepDao scenario_stepDao = ctx.getBean(Scenario_stepDao.class);
+    MessageDao messageDao = ctx.getBean(MessageDao.class);
 
     @RequestMapping(value = "/ping", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -38,34 +45,45 @@ public class RestApi {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public String startBot(@RequestBody String jsonObject) throws FileNotFoundException {
-        TransactionDao transactionDao = ctx.getBean(TransactionDao.class);
-        ScenarioDao scenarioDao = ctx.getBean(ScenarioDao.class);
+
 
         JsonObject receiveJson = getJsonObject(jsonObject);
 
-        String userId = receiveJson.getAsJsonObject("userRequest")
-                .getAsJsonObject("user")
-                .get("id").getAsString();
+        String userId = getUserID(receiveJson);
 
         Scenario scenario = scenarioDao.getRandomScenario();
 
-        Transaction transaction = new Transaction();
-        transaction.setTransaction_id(userId);
-        transaction.setCon_scenario(scenario.getScenario_id());
-        transaction.setCon_scenario_step(1);
+        transactionDao.insert(new Transaction(userId, scenario.getScenario_id(), 1));
 
-        transactionDao.insert(transaction);
+        String object_id = scenario_stepDao.findObject_IdByIdStep(scenario.getScenario_id(), 1);
+        String message = messageDao.findMessageByOBJID(object_id);
 
 //        String anwser = "Hi ~, shall we start today's lesson? Start study by typing \"LEGO\"";
         String botAnswer = "Now, let's try a role-play!\n" +
                 "please use the expressions in the card as much as you can during the role-play\n" +
                 "We Shall do an exercise that will involve you to translate korean sentences into English.\n" +
                 "Okay! Let's hop right in! *('V')*\n" + scenario.getComment() + "\n\n" +
-                "";
+                "[question1]\n" + message;
 
         JsonObject returnJson = getSimpleTextJson(botAnswer);
 
         return returnJson.toString();
+    }
+
+    @RequestMapping(value = "/bot", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public String bot(@RequestBody String jsonObject) {
+        JsonObject receiveJson = getJsonObject(jsonObject);
+
+        JsonObject returnJson = new JsonObject();
+
+        return returnJson.toString();
+    }
+
+    private String getUserID(JsonObject receiveJson) {
+        return receiveJson.getAsJsonObject("userRequest")
+                .getAsJsonObject("user")
+                .get("id").getAsString();
     }
 
     JsonObject getSimpleTextJson(String Text) throws FileNotFoundException {

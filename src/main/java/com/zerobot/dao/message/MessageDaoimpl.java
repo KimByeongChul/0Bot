@@ -1,5 +1,7 @@
 package com.zerobot.dao.message;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -11,7 +13,13 @@ public class MessageDaoimpl implements MessageDao {
     public String findMessageByOBJID(String object_id) {
         String sql =
                 "SELECT MESSAGE FROM ZEROBOT.MESSAGE WHERE OBJECT_ID=?";
-        return jdbc.queryForObject(sql,String.class,object_id);
+
+
+        try {
+            return jdbc.queryForObject(sql,String.class,object_id);
+        } catch (EmptyResultDataAccessException e) {
+            return "[메세지 테이블에서 메세지를 검색하지 못했습니다. 추가해주세요.]";
+        }
     }
 
     public JdbcTemplate getJdbc() {

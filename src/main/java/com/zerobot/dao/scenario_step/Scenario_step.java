@@ -16,6 +16,7 @@ public class Scenario_step implements RowMapper<Scenario_step> {
 
     @Override
     public Scenario_step mapRow(ResultSet resultSet, int i) throws SQLException {
+
         Scenario_step scenario_step = new Scenario_step();
         scenario_step.setScenario_id(resultSet.getString("SCENARIO_ID"));
         scenario_step.setObject_id(resultSet.getString("OBJECT_ID"));

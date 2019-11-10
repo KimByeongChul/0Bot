@@ -1,6 +1,8 @@
 package com.zerobot.dao.transaction;
 
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -22,7 +24,14 @@ public class TransactionDaoImpl implements TransactionDao {
         map.put("CON_SCENARIO", transaction.getCon_scenario());
         map.put("CON_SCENARIO_STEP", transaction.getCon_scenario_step());
 
-        namedJdbc.update(sql, map);
+
+        try {
+            namedJdbc.update(sql, map);
+        } catch (DuplicateKeyException e) {
+            deleteByID(transaction.getTransaction_id());
+            namedJdbc.update(sql, map);
+        }
+
     }
 
     @Override
@@ -44,7 +53,7 @@ public class TransactionDaoImpl implements TransactionDao {
         Map<String, Object> map = new HashMap<>();
         map.put("TRANSACTION_ID", id);
 
-        namedJdbc.queryForObject(sql, map, new Transaction());
+        namedJdbc.update(sql, map);
     }
 
     public void setJdbc(JdbcTemplate jdbc) {

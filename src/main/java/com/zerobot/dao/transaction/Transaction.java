@@ -23,6 +23,14 @@ public class Transaction implements RowMapper<Transaction> {
         return transaction;
     }
 
+    public Transaction() {
+    }
+
+    public Transaction(String transaction_id, String con_scenario, int con_scenario_step) {
+        this.transaction_id = transaction_id;
+        this.con_scenario = con_scenario;
+        this.con_scenario_step = con_scenario_step;
+    }
 
     public String getTransaction_id() {
         return transaction_id;
