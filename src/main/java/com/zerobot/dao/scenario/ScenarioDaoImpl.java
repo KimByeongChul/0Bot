@@ -18,19 +18,20 @@ public class ScenarioDaoImpl implements ScenarioDao {
     NamedParameterJdbcTemplate namedJdbc;
     @Override
     public Scenario getRandomScenario() {
-        String sql = "SELECT * FROM ZEROBOT.SCENARIO";
+        String sql = "SELECT * FROM ZEROBOT.SCENARIO ORDER BY RAND() LIMIT 1";
 
-        List<Scenario> scenarioList = jdbc.query(sql, new RowMapper<Scenario>() {
-            @Override
-            public Scenario mapRow(ResultSet resultSet, int i) throws SQLException {
-                Scenario scenario = new Scenario();
-                scenario.setScenario_id(resultSet.getString("SCENARIO_ID"));
-                scenario.setComment(resultSet.getString("COMMENT"));
-                return scenario;
-            }
-        });
+//        List<Scenario> scenarioList = jdbc.query(sql, new RowMapper<Scenario>() {
+//            @Override
+//            public Scenario mapRow(ResultSet resultSet, int i) throws SQLException {
+//                Scenario scenario = new Scenario();
+//                scenario.setScenario_id(resultSet.getString("SCENARIO_ID"));
+//                scenario.setComment(resultSet.getString("COMMENT"));
+//                return scenario;
+//            }
+//        });
 
-        return scenarioList.get(new Random().nextInt(scenarioList.size()));
+//        return scenarioList.get(new Random().nextInt(scenarioList.size()));
+        return jdbc.queryForObject(sql,new Scenario());
     }
 
     public void setJdbc(JdbcTemplate jdbc) {

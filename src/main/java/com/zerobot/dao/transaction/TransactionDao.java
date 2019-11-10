@@ -11,4 +11,5 @@ public interface TransactionDao {
     void insert(Transaction transaction);
     Transaction findByID(String id);
     void deleteByID(String id);
+    void update(Transaction transaction);
 }

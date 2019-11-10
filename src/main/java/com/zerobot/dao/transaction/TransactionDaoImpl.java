@@ -56,6 +56,14 @@ public class TransactionDaoImpl implements TransactionDao {
         namedJdbc.update(sql, map);
     }
 
+    @Override
+    public void update(Transaction transaction) {
+        String sql =
+                "UPDATE ZEROBOT.TRANSACTION SET CON_SCENARIO_STEP=? WHERE TRANSACTION_ID=?";
+
+        jdbc.update(sql, transaction.con_scenario_step, transaction.transaction_id);
+    }
+
     public void setJdbc(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }

@@ -18,7 +18,7 @@ public class MessageDaoimpl implements MessageDao {
         try {
             return jdbc.queryForObject(sql,String.class,object_id);
         } catch (EmptyResultDataAccessException e) {
-            return "[메세지 테이블에서 메세지를 검색하지 못했습니다. 추가해주세요.]";
+            return "[End of scenario]";
         }
     }
 

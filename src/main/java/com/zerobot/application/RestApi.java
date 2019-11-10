@@ -62,8 +62,8 @@ public class RestApi {
         String botAnswer = "Now, let's try a role-play!\n" +
                 "please use the expressions in the card as much as you can during the role-play\n" +
                 "We Shall do an exercise that will involve you to translate korean sentences into English.\n" +
-                "Okay! Let's hop right in! *('V')*\n" + scenario.getComment() + "\n\n" +
-                "[question1]\n" + message;
+                "Okay! Let's hop right in! *('V')*\n\n" + scenario.getComment() + "\n\n" +
+                "[question]\n" + message;
 
         JsonObject returnJson = getSimpleTextJson(botAnswer);
 
@@ -72,11 +72,29 @@ public class RestApi {
 
     @RequestMapping(value = "/bot", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public String bot(@RequestBody String jsonObject) {
+    public String bot(@RequestBody String jsonObject) throws FileNotFoundException {
         JsonObject receiveJson = getJsonObject(jsonObject);
+        String userId = getUserID(receiveJson);
 
-        JsonObject returnJson = new JsonObject();
 
+        Transaction trx = null;
+        try {
+            trx = transactionDao.findByID(userId);
+        } catch (EmptyResultDataAccessException e) {
+            return getSimpleTextJson("진행중인 대화가 없습니다 'LEGO'를 입력해주세요.").toString();
+        }
+
+        trx.setCon_scenario_step(trx.getCon_scenario_step() + 1);
+        transactionDao.update(trx);
+
+        String object_id = scenario_stepDao.findObject_IdByIdStep(trx.getCon_scenario(), trx.getCon_scenario_step());
+        String message = messageDao.findMessageByOBJID(object_id);
+
+        if(message.equals("[End of scenario]")){
+            transactionDao.deleteByID(userId);
+        }
+
+        JsonObject returnJson = getSimpleTextJson(message);
         return returnJson.toString();
     }
 
