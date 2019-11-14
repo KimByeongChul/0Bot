@@ -1,13 +1,23 @@
+create table ZEROBOT.CLASS_EVALUATION
+(
+    USED_WORD_NUM     int    null,
+    USED_SENTENCE_NUM int    null,
+    WORD_PER_SENTENCE double null
+);
+수업평가를 하기 위한 테이블
+-------------------------------------------------------
+
 create table ZEROBOT.HISTORY
 (
-    U_ID             varchar(100) null, // 유저 ID
-    CREATE_TIME      date         null, // 대화 했던 타임스탬프
-    USER_INPUT       varchar(200) null, // 내가 답변했었던 대화
-    CORRECTED_OUTPUT varchar(200) null, // 유사도의 기준이 되는 대화
-    Similarity       int          null, // 유사도
+    U_ID              varchar(100) null,
+    CREATE_TIME       date         null,
+    USER_INPUT        varchar(200) null,
+    CORRECTED_OUTPUT  varchar(200) null,
+    SIMILARITY        int          null,
     constraint HISTORY_KAKAO_USER_U_ID_fk
         foreign key (U_ID) references ZEROBOT.KAKAO_USER (U_ID)
 );
+
 히스토리 테이블은 사용자가 대답했던 대화에 대해 유사도를 저장하여 조회하기 위한 테이블 입니당,
 
 

@@ -98,6 +98,8 @@ public class RestApi {
         return returnJson.toString();
     }
 
+
+
     private String getUserID(JsonObject receiveJson) {
         return receiveJson.getAsJsonObject("userRequest")
                 .getAsJsonObject("user")
