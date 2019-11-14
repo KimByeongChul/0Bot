@@ -13,6 +13,7 @@ public class Transaction implements RowMapper<Transaction> {
     String transaction_id;
     String con_scenario;
     int con_scenario_step;
+    String class_id;
 
     @Override
     public Transaction mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -54,5 +55,13 @@ public class Transaction implements RowMapper<Transaction> {
 
     public void setCon_scenario_step(int con_scenario_step) {
         this.con_scenario_step = con_scenario_step;
+    }
+
+    public String getClass_id() {
+        return class_id;
+    }
+
+    public void setClass_id(String class_id) {
+        this.class_id = class_id;
     }
 }

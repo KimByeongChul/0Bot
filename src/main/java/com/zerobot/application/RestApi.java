@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import com.zerobot.dao.history.History;
+import com.zerobot.dao.history.HistoryDao;
 import com.zerobot.dao.message.MessageDao;
 import com.zerobot.dao.scenario.Scenario;
 import com.zerobot.dao.scenario.ScenarioDao;
@@ -20,6 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.Random;
 
 
 @RestController
@@ -31,6 +37,7 @@ public class RestApi {
     ScenarioDao scenarioDao = ctx.getBean(ScenarioDao.class);
     Scenario_stepDao scenario_stepDao = ctx.getBean(Scenario_stepDao.class);
     MessageDao messageDao = ctx.getBean(MessageDao.class);
+    HistoryDao historyDao = ctx.getBean(HistoryDao.class);
 
     @RequestMapping(value = "/ping", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -75,8 +82,6 @@ public class RestApi {
     public String bot(@RequestBody String jsonObject) throws FileNotFoundException {
         JsonObject receiveJson = getJsonObject(jsonObject);
         String userId = getUserID(receiveJson);
-
-
         Transaction trx = null;
         try {
             trx = transactionDao.findByID(userId);
@@ -84,13 +89,21 @@ public class RestApi {
             return getSimpleTextJson("진행중인 대화가 없습니다 'LEGO'를 입력해주세요.").toString();
         }
 
+
+        String userMessage = getUserMessage(receiveJson);
+        String object_id = scenario_stepDao.findObject_IdByIdStep(trx.getCon_scenario(), trx.getCon_scenario_step());
+        String correctMessage = messageDao.findMessageByOBJID(object_id);
+
         trx.setCon_scenario_step(trx.getCon_scenario_step() + 1);
         transactionDao.update(trx);
 
-        String object_id = scenario_stepDao.findObject_IdByIdStep(trx.getCon_scenario(), trx.getCon_scenario_step());
+        object_id = scenario_stepDao.findObject_IdByIdStep(trx.getCon_scenario(), trx.getCon_scenario_step());
         String message = messageDao.findMessageByOBJID(object_id);
 
-        if(message.equals("[End of scenario]")){
+        History history = new History(userId, new Date(),userMessage,correctMessage,trx.getClass_id());
+        historyDao.insert(history);
+
+        if (message.equals("[End of scenario]")) {
             transactionDao.deleteByID(userId);
         }
 
@@ -98,6 +111,10 @@ public class RestApi {
         return returnJson.toString();
     }
 
+    private String getUserMessage(JsonObject receiveJson) {
+        return receiveJson.getAsJsonObject("userRequest")
+                .get("utterance").getAsString();
+    }
 
 
     private String getUserID(JsonObject receiveJson) {
@@ -122,6 +139,8 @@ public class RestApi {
         JsonObject json = (JsonObject) parser.parse(jsonReceive);
         return json;
     }
+
+
 
 
 }

@@ -14,11 +14,23 @@ public class MessageDaoimpl implements MessageDao {
         String sql =
                 "SELECT MESSAGE FROM ZEROBOT.MESSAGE WHERE OBJECT_ID=?";
 
-
         try {
-            return jdbc.queryForObject(sql,String.class,object_id);
+            return jdbc.queryForObject(sql, String.class, object_id);
         } catch (EmptyResultDataAccessException e) {
             return "[End of scenario]";
+        }
+    }
+
+    @Override
+    public String findCorrectMSGByOBJID(String object_id) {
+        String sql =
+                "SELECT CORRECT_REPLY FROM ZEROBOT.MESSAGE WHERE OBJECT_ID=?";
+
+        try {
+            return jdbc.queryForObject(sql, String.class, object_id);
+        } catch (EmptyResultDataAccessException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 

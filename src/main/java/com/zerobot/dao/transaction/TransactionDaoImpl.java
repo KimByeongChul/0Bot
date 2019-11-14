@@ -1,23 +1,36 @@
 package com.zerobot.dao.transaction;
 
 
+import com.zerobot.dao.history.History;
+import com.zerobot.dao.history.HistoryDao;
+import com.zerobot.dao.message.MessageDao;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class TransactionDaoImpl implements TransactionDao {
     JdbcTemplate jdbc;
     NamedParameterJdbcTemplate namedJdbc;
+    MessageDao messageDao;
+    HistoryDao historyDao;
 
     @Override
     public void insert(Transaction transaction) {
         String sql =
                 "INSERT INTO ZEROBOT.TRANSACTION(TRANSACTION_ID, CON_SCENARIO, CON_SCENARIO_STEP) "
                         + "VALUES(:TRANSCATION_ID, :CON_SCENARIO, :CON_SCENARIO_STEP)";
+
+        String class_id = getRandomString();
+        while(!historyDao.isEmpty(class_id)){
+            class_id = getRandomString();
+        }
 
         Map<String, Object> map = new HashMap<>();
         map.put("TRANSCATION_ID", transaction.getTransaction_id());
@@ -70,5 +83,33 @@ public class TransactionDaoImpl implements TransactionDao {
 
     public void setNamedJdbc(NamedParameterJdbcTemplate namedJdbc) {
         this.namedJdbc = namedJdbc;
+    }
+
+    public String getRandomString() {
+        byte[] b = new byte[10];
+        new Random().nextBytes(b);
+        String MD5 = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(b);
+            byte byteData[] = md.digest();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            MD5 = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            MD5 = null;
+        }
+        return MD5;
+    }
+
+    public void setMessageDao(MessageDao messageDao) {
+        this.messageDao = messageDao;
+    }
+
+    public void setHistoryDao(HistoryDao historyDao) {
+        this.historyDao = historyDao;
     }
 }
