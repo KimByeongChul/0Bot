@@ -15,5 +15,4 @@
     <bean class="com.zerobot.dao.scenario_step.Scenario_stepDaoImpl" autowire="byType"></bean>
 
 
-
 </beans>

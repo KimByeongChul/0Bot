@@ -28,7 +28,7 @@ public class TransactionDaoImpl implements TransactionDao {
                         + "VALUES(:TRANSCATION_ID, :CON_SCENARIO, :CON_SCENARIO_STEP)";
 
         String class_id = getRandomString();
-        while(!historyDao.isEmpty(class_id)){
+        while (!historyDao.isEmpty(class_id)) {
             class_id = getRandomString();
         }
 

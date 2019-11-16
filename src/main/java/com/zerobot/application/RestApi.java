@@ -37,7 +37,6 @@ public class RestApi {
     ScenarioDao scenarioDao = ctx.getBean(ScenarioDao.class);
     Scenario_stepDao scenario_stepDao = ctx.getBean(Scenario_stepDao.class);
     MessageDao messageDao = ctx.getBean(MessageDao.class);
-    HistoryDao historyDao = ctx.getBean(HistoryDao.class);
 
     @RequestMapping(value = "/ping", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
@@ -100,9 +99,6 @@ public class RestApi {
         object_id = scenario_stepDao.findObject_IdByIdStep(trx.getCon_scenario(), trx.getCon_scenario_step());
         String message = messageDao.findMessageByOBJID(object_id);
 
-        History history = new History(userId, new Date(),userMessage,correctMessage,trx.getClass_id());
-        historyDao.insert(history);
-
         if (message.equals("[End of scenario]")) {
             transactionDao.deleteByID(userId);
         }
@@ -139,8 +135,6 @@ public class RestApi {
         JsonObject json = (JsonObject) parser.parse(jsonReceive);
         return json;
     }
-
-
 
 
 }

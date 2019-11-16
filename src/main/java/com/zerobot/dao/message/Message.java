@@ -12,7 +12,7 @@ public class Message implements RowMapper<Message> {
     @Id
     String Object_id;
     String message;
-    String correct_reply;
+            String correct_reply;
 
     @Override
     public Message mapRow(ResultSet resultSet, int i) throws SQLException {

@@ -18,12 +18,12 @@ public class HistoryDaoImpl implements HistoryDao {
                         + "VALUES(:U_ID, :CREATE_TIME, :USER_INPUT, :CORRECTED_OUTPUT, :SIMILARITY, :CLASS_ID)";
 
         Map<String, Object> map = new HashMap<>();
-        map.put("U_ID",history.getU_id());
-        map.put("CREATE_TIME",history.getCreate_time());
-        map.put("USER_INPUT",history.getUser_input());
-        map.put("CORRECTED_OUTPUT",history.getCorrected_output());
-        map.put("SIMILARITY",history.getSimilarity());
-        map.put("CLASS_ID",history.getClass());
+        map.put("U_ID", history.getU_id());
+        map.put("CREATE_TIME", history.getCreate_time());
+        map.put("USER_INPUT", history.getUser_input());
+        map.put("CORRECTED_OUTPUT", history.getCorrected_output());
+        map.put("SIMILARITY", history.getSimilarity());
+        map.put("CLASS_ID", history.getClass());
 
         namedJdbc.update(sql, map);
     }

@@ -16,6 +16,7 @@ public class ScenarioDaoImpl implements ScenarioDao {
     JdbcTemplate jdbc;
 
     NamedParameterJdbcTemplate namedJdbc;
+
     @Override
     public Scenario getRandomScenario() {
         String sql = "SELECT * FROM ZEROBOT.SCENARIO ORDER BY RAND() LIMIT 1";
@@ -31,7 +32,7 @@ public class ScenarioDaoImpl implements ScenarioDao {
 //        });
 
 //        return scenarioList.get(new Random().nextInt(scenarioList.size()));
-        return jdbc.queryForObject(sql,new Scenario());
+        return jdbc.queryForObject(sql, new Scenario());
     }
 
     public void setJdbc(JdbcTemplate jdbc) {
